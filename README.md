@@ -79,3 +79,10 @@ class remove {
 
 - Adding an `--all` parameter to skip the `git status` execution and just check the entire folder.
 - Adding an verbose option, I actually got it in the code already but it's not used yet.
+
+## FAQ:
+Q: Why?
+A: Because I tend to forget my dumps in tools. If you don't, you're probably a good programmer and won't need this.
+
+Q: Why PHP?
+A: Because my Python is pretty rusty and I wanted some quick results.
