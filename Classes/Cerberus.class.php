@@ -10,6 +10,10 @@ class Cerberus {
     private $command;
     private $isVerbose;
 
+    /**
+     * Cerberus constructor.
+     * @param array $argv Command line arguments
+     */
     public function __construct($argv) {
         $this->setFilterDir(__DIR__.'/../Filters/');
         $this->setFilter(explode('::', $argv[1])[0]);
@@ -24,9 +28,18 @@ class Cerberus {
         $this->executeFilter();
     }
 
+    /**
+     * Execute function. Doesn't take any params, pulls everyone from this instance which is set in the constructor.
+     */
     public function executeFilter() {
+        $this->writeStdOut('#######################');
+        $this->writeStdOut('#  Starting Cerberus! #');
+        $this->writeStdOut('#   Woof woof woof!   #');
+        $this->writeStdOut('#######################');
+        $this->writeStdOut('');
+        $this->writeStdOut('');
+
         $affectedByFilter = false;
-        $linesToModify = [];
         $filterName = $this->getFilter();
         $commandName = $this->getCommand();
         //FIX THIS
@@ -34,12 +47,14 @@ class Cerberus {
         $files = $this->getGitStatusHistory();
 
         if(count($files) === 0) {
-            echo "No changed files found. Aborting Cerberus";
+            $this->writeStdOut("No changed files found. Aborting Cerberus");
         }
 
-        //--all Parameter that checks all the files in case git is not available or you simply want everything changed
+        $this->writeStdOut('Found '.count($files) . ' files with \'git status\'');
+
+        //@TODO: implement --all Parameter that checks all the files in case git is not available or you simply want everything changed
         foreach($files as $file) {
-            echo 'Found '.count($files) . ' files with \'git status\'';
+            $this->writeStdOut("Processing {$file}");
             $fileContent = file($file);
             $changedLinesCount = 0;
             foreach($fileContent as $lineNr => $line) {
@@ -52,28 +67,40 @@ class Cerberus {
                     $changedLinesCount++;
                 }
 
+                //We have to check for the START last otherwise the line itself would be changed too.
                 if(preg_match("/(?i)(#{$this->getFilter()}::START).*$/", trim($line), $match)) {
                     $affectedByFilter = true;
                 }
             }
+            file_put_contents($file, implode($fileContent));
+            $this->writeStdOut( "Replaced {$changedLinesCount} lines in file {$file}.");
         }
-
-        file_put_contents($file, implode($fileContent));
-        echo "Replaced {$changedLinesCount} lines in file {$file}.";
     }
 
+    /**
+     * Executes two filters
+     * @return bool
+     */
     public function validate() {
         return $this->_validateFilter() && $this->_validateCommand();
     }
 
+    /**
+     * Validate the existence of te filter by checking if a file with that name exists
+     * @return bool
+     */
     private function _validateFilter() {
         if(!file_exists($this->getFilterPath())) {
-            echo "The filter {$this->getFilter()} is not defined in {$this->getFilterDir()}";
+            $this->writeStdOut( "The filter {$this->getFilter()} is not defined in {$this->getFilterDir()}");
             return false;
         }
         return true;
     }
 
+    /**
+     * Instanciates a class, then checks if the command exists as a method in that class
+     * @return bool
+     */
     private function _validateCommand() {
         require $this->getFilterPath();
 
@@ -82,12 +109,16 @@ class Cerberus {
         $filterObject = new $class;
 
         if(!method_exists($filterObject, $this->getCommand())) {
-            echo "The command {$this->getCommand()} is not defined in {$this->getFilterPath()}";
+            $this->writeStdOut( "The command {$this->getCommand()} is not defined in {$this->getFilterPath()}");
             return false;
         }
         return true;
     }
 
+    /**
+     * fetches the output of 'git status', returning only the paths to classes that are new or modified
+     * @return array
+     */
     public function getGitStatusHistory() {
         $output = array();
         chdir($this->getRootDir());
@@ -98,9 +129,24 @@ class Cerberus {
             if(preg_match('/^(modified)\b.*$/', trim($line), $match)) {
                 $filesToSearch[] = $this->getRootDir().trim(str_replace('modified:', '', $match[0]));
             }
+
+            if(preg_match('/^(new file)\b.*$/', trim($line), $match)) {
+                $filesToSearch[] = $this->getRootDir().trim(str_replace('new file:', '', $match[0]));
+            }
         }
 
         return $filesToSearch;
+    }
+
+    /**
+     * write to stdout
+     *
+     * @param string $sMessage log message
+     *
+     * @return void
+     */
+    public function writeStdOut($message) {
+        file_put_contents('php://stdout', $message.PHP_EOL);
     }
 
     /**
@@ -112,7 +158,7 @@ class Cerberus {
     }
 
     /**
-     * @param mixed $action
+     * @param mixed $filter
      */
     public function setFilter($filter)
     {
