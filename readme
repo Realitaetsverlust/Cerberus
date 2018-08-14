@@ -1,4 +1,6 @@
-#Cerberus
+Cerberus
+==========
+
 ###A code modifier tool written in the worst language of them all
 
 Cerberus is a super simple and extendable code modifier tool written in PHP. What does this do? You can setup tags and modifiy code based on the rules you can program yourself. For example, lets say we have the following code:
