@@ -82,7 +82,9 @@ class remove {
 
 ## FAQ:
 Q: Why?
+
 A: Because I tend to forget my dumps in tools. If you don't, you're probably a good programmer and won't need this.
 
 Q: Why PHP?
+
 A: Because my Python is pretty rusty and I wanted some quick results.
