@@ -1,7 +1,7 @@
 Cerberus
 ==========
 
-###A code modifier tool written in the worst language of them all
+### A code modifier tool written in the worst language of them all
 
 Cerberus is a super simple and extendable code modifier tool written in PHP. What does this do? You can setup tags and modifiy code based on the rules you can program yourself. For example, lets say we have the following code:
 
@@ -70,12 +70,12 @@ class remove {
 }
 ```
 
-##Requirements:
+## Requirements:
  - I only tested it on PHP 7.0, but I did not use any features PHP 7.0+ do offer. You will most likely need PHP 5.6, otherwise array declarations will fail.
  - Git (Cerberus is using 'git status' to figure out what files were modified or added and will only check those)
  - That's it!
 
-##ToDos:
+## ToDos:
 
 - Adding an `--all` parameter to skip the `git status` execution and just check the entire folder.
 - Adding an verbose option, I actually got it in the code already but it's not used yet.
