@@ -40,10 +40,9 @@ class Cerberus {
         $this->writeStdOut('');
 
         $affectedByFilter = false;
-        $filterName = $this->getFilter();
+        $filterName = '\\'.__NAMESPACE__.'\\'.$this->getFilter();
         $commandName = $this->getCommand();
-        //FIX THIS
-        $filter = new debug();
+        $filter = new $filterName();
         $files = $this->getGitStatusHistory();
 
         if(count($files) === 0) {
