@@ -20,7 +20,7 @@ public function foo() {
 
 As you can see, we have two tags there: #DEBUG::START and #DEBUG::END. These indicate that these lines are to be affected by the filter `debug`.
 
-A filter is as simple as you can possible imagine:
+A filter is as simple as you can possibly imagine:
 
 ```
 namespace Cerberus;
